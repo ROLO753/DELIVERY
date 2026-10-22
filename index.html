@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cafetería La Distingancia | Panel de Empleado</title>
+  <style>
+    :root {
+      --primary: #ff3b30;
+      --primary-dark: #d92817;
+      --secondary: #ffd60a;
+      --dark: #1a1a2e;
+      --muted: #6b7280;
+      --bg: #f5f1ff;
+      --card: rgba(255,255,255,0.98);
+      --green: #34c759;
+      --green-dark: #00a854;
+      --orange: #ff9500;
+      --shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--dark);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(135deg, #ff3b30, #d92817);
+      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      color: white;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, #ffd60a, #ffb700);
+      color: #000;
+    }
+
+    .employee-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      padding: 14px 10px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .stat-card span {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-card strong {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .section-title {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .refresh-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .order-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #f1f3f5;
+      padding-bottom: 8px;
+    }
+
+    .client-name {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--dark);
+    }
+
+    .order-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-delivery { background: #d1ecf1; color: #0c5460; }
+    .status-completed { background: #d4edda; color: #155724; }
+
+    .order-details {
+      font-size: 0.9rem;
+      color: #495057;
+      margin-bottom: 12px;
+    }
+
+    .order-details p {
+      margin-bottom: 4px;
+    }
+
+    .items-box {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+    }
+
+    .items-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .items-box li {
+      padding: 2px 0;
+      border-bottom: 1px dashed #e9ecef;
+    }
+    .items-box li:last-child {
+      border-bottom: none;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-accept { background: linear-gradient(135deg, #ff9500, #e08200); }
+    .btn-complete { background: linear-gradient(135deg, #34c759, #00a854); }
+    .btn-delete { background: #e9ecef; color: var(--muted); flex: 0.4; }
+
+    .empty-state {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      box-shadow: var(--shadow);
+    }
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">🛵</div>
+      <span>Panel de Empleado</span>
+    </div>
+    <div class="employee-badge">👤 Operador</div>
+  </header>
+
+  <div class="container">
+    
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span>Pendientes</span>
+        <strong id="stat-pending">0</strong>
+      </div>
+      <div class="stat-card">
+        <span>En Camino</span>
+        <strong id="stat-delivery">0</strong>
+      </div>
+      <div class="stat-card">
+        <span>Venta Hoy</span>
+        <strong id="stat-total">RD$ 0</strong>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>📦 Pedidos Activos</span>
+      <button class="refresh-btn" onclick="loadOrders()">🔄 Actualizar</button>
+    </div>
+
+    <!-- Lista de Pedidos -->
+    <div class="orders-list" id="orders-container">
+      <!-- Se carga dinámicamente -->
+    </div>
+
+  </div>
+
+  <script>
+    // Simulación de pedidos guardados (puedes conectar esto a LocalStorage o Firebase más adelante)
+    let orders = [
+      {
+        id: 1,
+        client: "Juan Pérez",
+        address: "Av. Principal #12, Sector Los Prados",
+        payment: "Efectivo (Paga con RD$ 1000)",
+        status: "pending", // pending, delivery, completed
+        time: "Hace 10 mins",
+        items: [
+          { name: "Salami Picadera (Papa Frita)", qty: 1, price: 250 },
+          { name: "Cola Real 400ml", qty: 2, price: 100 }
+        ],
+        total: 400 // incluye 50 delivery
+      },
+      {
+        id: 2,
+        client: "María Gómez",
+        address: "Calle El Sol #45",
+        payment: "Transferencia Bancaria",
+        status: "delivery",
+        time: "Hace 25 mins",
+        items: [
+          { name: "Club Sandwich con Papas", qty: 1, price: 350 },
+          { name: "Jugo Chinola", qty: 1, price: 150 }
+        ],
+        total: 550
+      }
+    ];
+
+    function renderOrders() {
+      const container = document.getElementById('orders-container');
+      container.innerHTML = '';
+
+      let pendingCount = 0;
+      let deliveryCount = 0;
+      let totalSales = 0;
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>No hay pedidos activos en este momento</p>
+          </div>
+        `;
+        updateStats(0, 0, 0);
+        return;
+      }
+
+      orders.forEach(order => {
+        if (order.status === 'pending') pendingCount++;
+        if (order.status === 'delivery') deliveryCount++;
+        if (order.status === 'completed') totalSales += order.total;
+
+        let statusText = 'Pendiente';
+        let statusClass = 'status-pending';
+        if (order.status === 'delivery') {
+          statusText = 'En Camino 🛵';
+          statusClass = 'status-delivery';
+        } else if (order.status === 'completed') {
+          statusText = 'Completado ✅';
+          statusClass = 'status-completed';
+        }
+
+        let itemsHtml = order.items.map(i => `<li>${i.qty}x ${i.name} (RD$ ${i.price * i.qty})</li>`).join('');
+
+        container.innerHTML += `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <div class="client-name">${order.client}</div>
+                <div class="order-time">${order.time}</div>
+              </div>
+              <div class="status-pill ${statusClass}">${statusText}</div>
+            </div>
+            <div class="order-details">
+              <p>📍 <b>Dirección:</b> ${order.address}</p>
+              <p>💳 <b>Pago:</b> ${order.payment}</p>
+            </div>
+            <div class="items-box">
+              <ul>${itemsHtml}</ul>
+            </div>
+            <div style="font-weight: 800; margin-bottom: 12px; font-size: 0.95rem;">
+              💰 Total a cobrar: RD$ ${order.total}
+            </div>
+            <div class="order-actions">
+              ${order.status === 'pending' ? `<button class="action-btn btn-accept" onclick="changeStatus(${order.id}, 'delivery')">🛵 Enviar</button>` : ''}
+              ${order.status === 'delivery' ? `<button class="action-btn btn-complete" onclick="changeStatus(${order.id}, 'completed')">✅ Completar</button>` : ''}
+              <button class="action-btn btn-delete" onclick="removeOrder(${order.id})">🗑️</button>
+            </div>
+          </div>
+        `;
+      });
+
+      updateStats(pendingCount, deliveryCount, totalSales);
+    }
+
+    function changeStatus(id, newStatus) {
+      const order = orders.find(o => o.id === id);
+      if (order) {
+        order.status = newStatus;
+        renderOrders();
+      }
+    }
+
+    function removeOrder(id) {
+      if (confirm('¿Estás seguro de eliminar este registro?')) {
+        orders = orders.filter(o => o.id !== id);
+        renderOrders();
+      }
+    }
+
+    function updateStats(pending, delivery, sales) {
+      document.getElementById('stat-pending').innerText = pending;
+      document.getElementById('stat-delivery').innerText = delivery;
+      document.getElementById('stat-total').innerText = `RD$ ${sales}`;
+    }
+
+    function loadOrders() {
+      // Simulación de actualización de datos
+      renderOrders();
+    }
+
+    // Inicializar panel
+    renderOrders();
+  </script>
+</body>
+</html>
